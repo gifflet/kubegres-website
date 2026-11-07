@@ -1,0 +1,54 @@
+# Publishes the website on GitHub Pages (project site, served under /kubegres-website/).
+# The website is generated with Gigo (https://github.com/reactive-tech/gigo), the same tool used by deploy.sh.
+name: Publish website to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
+      - name: Install Gigo (pinned commit)
+        run: go install github.com/reactive-tech/gigo@d0c61861ceb3c3eeb3770b5ff5be1129c3137da8
+
+      - name: Generate website into target/
+        run: gigo gigo.yaml
+
+      # Links and assets use absolute paths (/doc/..., /includes/...), written for the root of kubegres.io.
+      # On a GitHub Pages project site the website lives under /kubegres-website/, so prefix them.
+      - name: Prefix absolute paths with the GitHub Pages base path
+        run: find target -name '*.html' -exec sed -i -E 's#(href|src)="/#\1="/kubegres-website/#g' {} +
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: target
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
