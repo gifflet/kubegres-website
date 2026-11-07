@@ -14,6 +14,13 @@
                     </p>
 
                     <p>
+                        The environment variable "PGDATA" is reserved: Kubegres sets it to "&lt;spec.database.volumeMount&gt;/pgdata"
+                        in the Primary and Replica Pods, so it must not be added to "env:". Since PostgreSql 18, the official
+                        docker image refuses to start when "PGDATA" is not consistent with the data folder it finds on the volume.
+                        Kubegres rejects a custom "PGDATA" with a "SpecCheckErr" event instead of letting the Pods crash
+                        (see <a target="_blank" href="https://github.com/gifflet/kubegres/pull/1">this change</a>).
+                    </p>
+                    <p>
                         You can set your custom environment variables in Kubegres YAML. For example, you can create
                         an environment variable which contains the password of a custom PostgreSql user. You can then access
                         to that env-variable in an <a href="/doc/override-default-configs.html#primary_init_script">
@@ -34,7 +41,7 @@ metadata:
 spec:
 
    replicas: 3
-   image: postgres:17.2
+   image: postgres:18.6
    port: 5432
 
    database:
