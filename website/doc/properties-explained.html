@@ -267,6 +267,14 @@ spec:
                                         image</a> (version 12.4 or higher) or any compatible image.
                                     <br/><br/> More details about
                                     <a target="_blank" href="https://hub.docker.com/_/postgres">Postgres Docker image</a>.
+                                    <br/><br/> The image can be changed later to another tag of the same major version
+                                    (e.g. from "postgres:18.4" to "postgres:18.6"): Kubegres recreates the Pods with the new
+                                    image on the same volumes. <b>Changing the major version (e.g. from "postgres:14.x" to
+                                    "postgres:18.x") is not supported</b>: PostgreSql cannot open the data files of another
+                                    major version, the Replica Pods crash with "database files are incompatible with server"
+                                    and the cluster is left without Replicas. To move to a new major version, create a new
+                                    Kubegres resource with the new image, migrate the data with "pg_dumpall" and "psql"
+                                    (or "pg_upgrade") and then switch the applications to the new resource.
                                 </td>
                             </tr>
 
