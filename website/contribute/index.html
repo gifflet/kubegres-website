@@ -165,13 +165,11 @@ BackUp states.  {"IsCronJobDeployed": false, "IsPvcDeployed": false, "CronJobLas
                     <h2>Run the acceptance tests</h2>
 
                     <p>
-                        Before running the tests, make sure the IP address set to the constant "DbHost", located in the file
-                        <a target="_blank" href="https://github.com/reactive-tech/kubegres/blob/main/internal/test/resourceConfigs/ConfigForTest.go">
-                            ConfigForTest.go</a>, matches with the address of any of the nodes in your local Kubernetes cluster:
+                        Since version 1.20 the tests reach the databases through "127.0.0.1" and the NodePorts published by
+                        the kind cluster config, so the constant "DbHost" in
+                        <a target="_blank" href="https://github.com/gifflet/kubegres/blob/main/internal/test/resourceConfigs/ConfigForTest.go">
+                            ConfigForTest.go</a> does not need to be changed, on Linux or on Docker Desktop.
                     </p>
-                    <pre>
-DbHost = "172.19.0.2"
-                    </pre>
 
                     <p>You can delete your local Kubernetes cluster since the acceptance tests will create one automatically:</p>
                     <pre>
