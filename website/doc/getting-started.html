@@ -16,6 +16,12 @@
 kubectl apply -f https://raw.githubusercontent.com/gifflet/kubegres/v1.20/kubegres.yaml
                     </pre>
 
+                    <p>The file "kubegres.yaml" installs the operator image
+                        <a target="_blank" href="https://github.com/gifflet/kubegres/pkgs/container/kubegres">ghcr.io/gifflet/kubegres:1.20</a>
+                        (linux/amd64, linux/arm64, linux/s390x and linux/ppc64le). If your cluster can only pull images from a
+                        private registry, copy that image there and change the "image" of the Deployment
+                        "kubegres-controller-manager" in "kubegres.yaml" before applying it.</p>
+
                     <p>During the installation, "Kubegres" creates the namespace "kubegres-system" where it installs its
                         components. Check their status as follows:</p>
                     <pre>
